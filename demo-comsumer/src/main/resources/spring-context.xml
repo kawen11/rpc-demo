@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+          http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util-3.1.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:component-scan base-package="com.ibigsea" />
+    <context:annotation-config />
+
+<!-- 	zk服务消费者zk的地址 -->
+    <bean id="zooKeeperConfig" class="com.ibigsea.rpc.zookeeper.ZooKeeperConfig">
+        <property name="host" value="127.0.0.1:2181"/>
+    </bean>
+
+<!-- 设置请求地址,需要生成代理的代理对象 -->
+    <bean id="helloInterfaceInvoke" class="com.ibigsea.rpc.proxy.ConsumerProxyFactory">
+        <property name="zkConfig" ref="zooKeeperConfig"/>
+        <property name="clazz" value="com.ibigsea.facade.HelloInterface"/>
+        <property name="protocol" value="netty"/>
+    </bean>
+    <bean id="wordInterfaceInvoke" class="com.ibigsea.rpc.proxy.ConsumerProxyFactory">
+        <property name="zkConfig" ref="zooKeeperConfig"/>
+        <property name="clazz" value="com.ibigsea.facade.WordInterface"/>
+        <property name="protocol" value="jetty"/>
+    </bean>
+<!--    产生代理对象,服务消费者可以直接通过@Resource注解引用到该对象,通过http-rpc框架调用到服务消费者 -->
+    <bean id="helloInterface" factory-bean="helloInterfaceInvoke" factory-method="create"/>
+    <bean id="wordInterface" factory-bean="wordInterfaceInvoke" factory-method="create"/>
+</beans>
