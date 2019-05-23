@@ -26,6 +26,7 @@ public class RPCResponseHandler extends ChannelHandlerAdapter {
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		ByteBuf msgbuf = (ByteBuf) msg;
 		System.out.println("server channelRead...; received:" + msgbuf.toString(CharsetUtil.UTF_8));
+		String receivedMsg = msgbuf.toString(CharsetUtil.UTF_8);
 		// 反序列化
 		NettyRequest req = JSON.parseObject(msgbuf.toString(CharsetUtil.UTF_8), NettyRequest.class);
 		// 获取到注册的服务,并通过反射执行方法

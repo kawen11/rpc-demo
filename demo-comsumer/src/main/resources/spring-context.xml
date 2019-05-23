@@ -27,7 +27,7 @@
     <bean id="helloInterfaceInvoke" class="com.ibigsea.rpc.proxy.ConsumerProxyFactory">
         <property name="zkConfig" ref="zooKeeperConfig"/>
         <property name="clazz" value="com.ibigsea.facade.HelloInterface"/>
-        <property name="protocol" value="netty"/>
+        <property name="protocol" value="jetty"/>
     </bean>
     <bean id="wordInterfaceInvoke" class="com.ibigsea.rpc.proxy.ConsumerProxyFactory">
         <property name="zkConfig" ref="zooKeeperConfig"/>

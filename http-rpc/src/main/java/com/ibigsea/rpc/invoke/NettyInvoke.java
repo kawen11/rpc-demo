@@ -26,7 +26,7 @@ public class NettyInvoke {
 	 */
 	private static NettyInvoke nettyInvoke;
 	
-	public static ConcurrentHashMap<String, MessageCallBack> callbacks = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<String, MessageCallBack> callbacks = new ConcurrentHashMap<String, MessageCallBack>();
 
 	private NettyInvoke() {
 

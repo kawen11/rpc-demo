@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.apache.zookeeper.ZooKeeper;
 
+import com.ibigsea.rpc.exception.RpcException;
 import com.ibigsea.rpc.invoke.HttpInvoke;
 import com.ibigsea.rpc.invoke.NettyInvoke;
 import com.ibigsea.rpc.serizlize.JsonFormatter;
@@ -72,11 +73,16 @@ public class ConsumerProxyFactory implements InvocationHandler {
 		System.out.println("End IP:***************************:" + host);
 		// 发送请求报文
 		String resb = "success";
-		if("jetty".equals(protocol)){
-			resb = JsonParser.resbParse(invoke.request(req, host));
-		} else if("netty".equals(protocol)){
-			NettyRequest nettyRequest = new NettyRequest(UUID.randomUUID().toString(),interfaceClass, method.getName(), args[0]);
-			resb = nettyInvoke.request(nettyRequest, host);
+		try {
+			if("jetty".equals(protocol)){
+				resb = JsonParser.resbParse(invoke.request(req, host));
+			} else if("netty".equals(protocol)){
+				NettyRequest nettyRequest = new NettyRequest(UUID.randomUUID().toString(),interfaceClass, method.getName(), args[0]);
+				resb = nettyInvoke.request(nettyRequest, host);
+			}
+		} catch (RpcException e) {
+			System.out.println("fail:***************************,retrying.....");
+			return "";
 		}
 		System.out.println("success:***************************" + resb);
 		// 解析响应报文
