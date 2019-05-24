@@ -1,2 +1,2 @@
-# http-rpc-demo
+# rpc-demo
 rpc demo
