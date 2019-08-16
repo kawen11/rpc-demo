@@ -59,6 +59,7 @@ public class ProviderProxyFactory extends AbstractHandler {
 	public ProviderProxyFactory(Map<Class, Object> providers, ProviderConfig config, ZooKeeperConfig zkConfig) {
 		this.providers = providers;
 		HttpContainer container = new HttpContainer(this, config, zkConfig);
+		//启动jetty容器
 		container.start();
 		factory = this;
 		for (Map.Entry<Class, Object> entry : providers.entrySet()) {

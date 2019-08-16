@@ -5,8 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
+import org.apache.zookeeper.Watcher;
+import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.data.Stat;
 
 public class ZkConnect {
 
@@ -47,6 +52,7 @@ public class ZkConnect {
     private void watchNode(){
     	try{
             //获取子节点信息
+    		System.out.println("Zookeeper重新获取服务结点。。。");
             List<String> nodeList = zk.getChildren(ZKConst.rootPath, true);
             List<String> dataList=new ArrayList<String>();
             for (String node : nodeList) {
@@ -61,15 +67,65 @@ public class ZkConnect {
     
 	public static void main(String[] args) {
 		ZooKeeperConfig zkConfig = new ZooKeeperConfig("127.0.0.1:2181");
-		ZooKeeper zk = null; 
 		try {
-			zk = new ZkConnect(zkConfig).getZkConnection();
-			
+			final ZooKeeper zk = new ZooKeeper("127.0.0.1:2181", 4000, new Watcher() {
+				public void process(WatchedEvent event) {
+					System.out.println("默认事件： " + event.getType());
+					if (Event.KeeperState.SyncConnected == event.getState()) {
+						// 如果收到了服务端的响应事件，连接成功
+						System.out.println("Connected!");
+					}
+				}
+			});
+			String perNode = "/test2/per1";
+			//创建持久结点
+			zk.create(perNode, "111".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+			//创建临时结点
+			String temNode = "/test2/temp1";
+			zk.create(temNode,"222".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
+//			// 通过exists绑定事件
+			Stat stat = zk.exists(perNode, new Watcher() {
+				public void process(WatchedEvent event) {
+					System.out.println(event.getType() + "->" + event.getPath());
+					 try {
+						 //再一次去绑定事件 ,但是这个走的是默认事件
+						 zk.exists(event.getPath(),true);
+					 } catch (KeeperException e) {
+						 e.printStackTrace();
+					 } catch (InterruptedException e) {
+						 e.printStackTrace();
+					 }
+				}
+			});
+
+			// 通过修改的事务类型操作来触发监听事件
+			stat = zk.setData(perNode, "2".getBytes(), stat.getVersion());
+
+			zk.getData(perNode, new Watcher() {
+				public void process(WatchedEvent event) {
+					System.out.println("2222222222");
+				}
+
+			}, stat);
+			stat = zk.setData(perNode, "3".getBytes(), stat.getVersion());
+
+			Thread.sleep(1000);
+
+			zk.getChildren(perNode, new Watcher() {
+				public void process(WatchedEvent event) {
+					System.out.println("33333333333");
+				}
+			});
+			//删除结点
+			zk.delete(perNode, stat.getVersion());
+
+			System.in.read();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		System.out.println(zk.getState());
 	}
 }

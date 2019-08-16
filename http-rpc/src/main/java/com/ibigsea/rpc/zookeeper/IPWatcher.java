@@ -17,26 +17,7 @@ public class IPWatcher implements Watcher{
     }
 
     public void process(WatchedEvent watchedEvent) {
-        /**
-         * 监听到节点提供者IP节点变化时被调用
-         * 调用后进行平衡操作
-         */
-        /*String path=watchedEvent.getPath();
-        String[] pathArr=path.split("/");
-        String serviceName=pathArr[3];//第四个部分则为服务名
-        RPCRequestNet.getInstance().serviceLockMap.get(serviceName).writeLock().lock();
-        System.out.println("providers changed...Lock write Lock");
-        try {
-            List<String> children=zooKeeper.getChildren(path,this);
-//            for (String ip:children){
-//                RPCRequestNet.getInstance().IPChannelMap.putIfAbsent(ip,new IPChannelInfo());
-//            }
-            RPC.getClientConfig().getLoadBalance().changeIP(serviceName,children);
-        } catch (KeeperException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        RPCRequestNet.getInstance().serviceLockMap.get(serviceName).writeLock().unlock();*/
+
+    	
     }
 }
