@@ -21,5 +21,5 @@ Zookeeper射
 
 
 ## 结构图
-！[rpc](https://github.com/kawen11/rpc-demo/tree/master/http-rpc/pic/rpc.jpg)
+！[rpc](https://github.com/kawen11/rpc-demo/tree/master/http-rpc/pic/rpc1.png)
 
