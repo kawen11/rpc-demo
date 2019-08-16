@@ -32,7 +32,14 @@ public class HttpRpcTest
     @Test
     public void test1() throws InterruptedException {
     	//隔5s时间执行一次
-    	MultiTask();
+    	while(true){
+    		try {
+				Thread.sleep(5000);
+				service.printWord("1213123133");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+    	}
     }
     
     @Test
@@ -61,16 +68,5 @@ public class HttpRpcTest
 
         String tip = String.format("RPC调用总共耗时: [%s] 毫秒", sw.getTime());
         System.out.println(tip);
-    }
-    
-    public void MultiTask(){
-    	while(true){
-    		try {
-				Thread.sleep(5000);
-				service.printWord("1213123133");
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-    	}
     }
 }
